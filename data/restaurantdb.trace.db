@@ -1,0 +1,12 @@
+2025-05-29 14:27:18.739378+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "DATABASECHANGELOGLOCK" not found; SQL statement:
+SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOGLOCK [42102-224]
+2025-05-29 14:27:18.860427+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE OR REPLACE [*]FUNCTION restaurants.update_updated_at_column()\000a            RETURNS TRIGGER AS $update_updated_at$\000a            BEGIN\000a            NEW.updated_at = CURRENT_TIMESTAMP;\000a            RETURN NEW;\000a            END;\000a            $update_updated_at$ LANGUAGE plpgsql;"; expected "FORCE, VIEW, MATERIALIZED, ALIAS, SEQUENCE, USER, TRIGGER, ROLE, SCHEMA, CONSTANT, DOMAIN, TYPE, AGGREGATE, LINKED, MEMORY, CACHED, LOCAL TEMPORARY, GLOBAL TEMPORARY, TEMPORARY, TABLE, SYNONYM, UNIQUE, SPATIAL, INDEX"; SQL statement:
+CREATE OR REPLACE FUNCTION restaurants.update_updated_at_column()
+            RETURNS TRIGGER AS $update_updated_at$
+            BEGIN
+            NEW.updated_at = CURRENT_TIMESTAMP;
+            RETURN NEW;
+            END;
+            $update_updated_at$ LANGUAGE plpgsql; [42001-224]
