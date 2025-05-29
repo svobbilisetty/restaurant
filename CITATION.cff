@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Doe"
+  given-names: "John"
+  orcid: "https://orcid.org/0000-0000-0000-0000"
+title: "Restaurant Management System"
+version: 1.0.0
+date-released: 2025-05-28
+url: "https://github.com/yourusername/restaurant-management-system"
+repository-code: "https://github.com/yourusername/restaurant-management-system"
+license: MIT
+abstract: "A comprehensive restaurant management system for handling restaurant onboarding, subscriptions, and verifications."

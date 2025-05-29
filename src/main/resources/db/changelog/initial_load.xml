@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Create the restaurants schema -->
+    <changeSet author="dineflow" id="create-restaurants-schema">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS restaurants;
+        </sql>
+        <rollback>
+            DROP SCHEMA IF EXISTS restaurants CASCADE;
+        </rollback>
+    </changeSet>
+
+    <!-- Create function for updating updated_at timestamp -->
+    <changeSet author="dineflow" id="create-update-timestamp-function">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION restaurants.update_updated_at_column()
+            RETURNS TRIGGER AS $update_updated_at$
+            BEGIN
+            NEW.updated_at = CURRENT_TIMESTAMP;
+            RETURN NEW;
+            END;
+            $update_updated_at$ LANGUAGE plpgsql;
+        </sql>
+        <rollback>
+            DROP FUNCTION IF EXISTS restaurants.update_updated_at_column();
+        </rollback>
+    </changeSet>
+
+    <!-- Create restaurant table -->
+    <changeSet author="dineflow" id="1601181411-0-1">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.restaurant (
+            id BIGSERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TRIGGER update_restaurant_updated_at
+            BEFORE UPDATE ON restaurants.restaurant
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.restaurant;
+        </rollback>
+    </changeSet>
+
+    <!-- Create subscription_plan table -->
+    <changeSet author="dineflow" id="1601181411-0-2">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.subscription_plan (
+            id BIGSERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TRIGGER update_subscription_plan_updated_at
+            BEFORE UPDATE ON restaurants.subscription_plan
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.subscription_plan;
+        </rollback>
+    </changeSet>
+
+    <!-- Create user table -->
+    <changeSet author="dineflow" id="1601181411-0-3">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.user (
+            id BIGSERIAL PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TRIGGER update_user_updated_at
+            BEFORE UPDATE ON restaurants.user
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.user;
+        </rollback>
+    </changeSet>
+
+    <!-- Create restaurant_subscription table -->
+    <changeSet author="dineflow" id="1601181411-1">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.restaurant_subscription (
+            id BIGSERIAL PRIMARY KEY,
+            restaurant_id BIGINT NOT NULL,
+            subscription_id BIGINT NOT NULL,
+            start_date DATE NOT NULL,
+            end_date DATE NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (restaurant_id) REFERENCES restaurants.restaurant (id),
+            FOREIGN KEY (subscription_id) REFERENCES restaurants.subscription_plan (id)
+            );
+
+            CREATE TRIGGER update_restaurant_subscription_updated_at
+            BEFORE UPDATE ON restaurants.restaurant_subscription
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.restaurant_subscription;
+        </rollback>
+    </changeSet>
+
+    <!-- Insert data into restaurant_subscription -->
+    <changeSet author="dineflow" id="1601181411-2">
+        <sql>
+            INSERT INTO restaurants.restaurant_subscription (restaurant_id, subscription_id, start_date, end_date)
+            SELECT id, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL '1 month'
+            FROM restaurants.restaurant;
+        </sql>
+        <rollback>
+            DELETE FROM restaurants.restaurant_subscription;
+        </rollback>
+    </changeSet>
+
+    <!-- Create restaurant_verification table -->
+    <changeSet author="dineflow" id="1601181411-3">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.restaurant_verification (
+            id BIGSERIAL PRIMARY KEY,
+            restaurant_id BIGINT NOT NULL,
+            fssai_license_image_url VARCHAR(255) NOT NULL,
+            location_image_url VARCHAR(255) NOT NULL,
+            gst_image_url VARCHAR(255) NOT NULL,
+            verification_status SMALLINT NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (restaurant_id) REFERENCES restaurants.restaurant (id)
+            );
+
+            CREATE TRIGGER update_restaurant_verification_updated_at
+            BEFORE UPDATE ON restaurants.restaurant_verification
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.restaurant_verification;
+        </rollback>
+    </changeSet>
+
+    <!-- Insert data into restaurant_verification -->
+    <changeSet author="dineflow" id="1601181411-4">
+        <sql>
+            INSERT INTO restaurants.restaurant_verification (restaurant_id, fssai_license_image_url, location_image_url, gst_image_url)
+            SELECT id, '', '', ''
+            FROM restaurants.restaurant;
+        </sql>
+        <rollback>
+            DELETE FROM restaurants.restaurant_verification;
+        </rollback>
+    </changeSet>
+
+    <!-- Create restaurant_owner table -->
+    <changeSet author="dineflow" id="1601181411-46">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.restaurant_owner (
+            id BIGSERIAL PRIMARY KEY,
+            restaurant_id BIGINT NOT NULL,
+            user_id BIGINT NOT NULL,
+            photo_url VARCHAR(255),
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (restaurant_id) REFERENCES restaurants.restaurant (id),
+            FOREIGN KEY (user_id) REFERENCES restaurants.user (id)
+            );
+
+            CREATE TRIGGER update_restaurant_owner_updated_at
+            BEFORE UPDATE ON restaurants.restaurant_owner
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.restaurant_owner;
+        </rollback>
+    </changeSet>
+
+    <!-- Create restaurant_partner table -->
+    <changeSet author="dineflow" id="1601181411-47">
+        <sql splitStatements="false">
+            CREATE TABLE IF NOT EXISTS restaurants.restaurant_partner (
+            id BIGSERIAL PRIMARY KEY,
+            restaurant_id BIGINT NOT NULL,
+            user_id BIGINT NOT NULL,
+            photo_url VARCHAR(255),
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (restaurant_id) REFERENCES restaurants.restaurant (id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES restaurants.user (id) ON DELETE CASCADE,
+            CONSTRAINT unique_restaurant_user UNIQUE (restaurant_id, user_id)
+            );
+
+            CREATE TRIGGER update_restaurant_partner_updated_at
+            BEFORE UPDATE ON restaurants.restaurant_partner
+            FOR EACH ROW
+            EXECUTE FUNCTION restaurants.update_updated_at_column();
+        </sql>
+        <rollback>
+            DROP TABLE IF EXISTS restaurants.restaurant_partner;
+        </rollback>
+    </changeSet>
+
+    <!-- Add ALTER TABLE statements -->
+    <changeSet author="dineflow" id="1601181411-45">
+        <sql splitStatements="false">
+            ALTER TABLE restaurants.restaurant_owner
+            ADD COLUMN IF NOT EXISTS photo_url VARCHAR(255);
+            ALTER TABLE restaurants.restaurant_partner
+            ADD COLUMN IF NOT EXISTS photo_url VARCHAR(255);
+        </sql>
+        <rollback>
+            ALTER TABLE restaurants.restaurant_owner
+            DROP COLUMN IF EXISTS photo_url;
+            ALTER TABLE restaurants.restaurant_partner
+            DROP COLUMN IF EXISTS photo_url;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

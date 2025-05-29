@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <include file="db/changelog/initial_load.xml"/>
+    <include file="db/changelog/db.changelog-update-initial-schema.xml"/>
+    <include file="db/changelog/db.changelog-add-is-active-column.xml"/>
+    <include file="db/changelog/db.changelog-add-restaurant-fields.xml"/>
+    <include file="db/changelog/db.changelog-update-subscription-schema.xml"/>
+    <include file="db/changelog/db.changelog-update-verification-schema.xml"/>
+
+</databaseChangeLog>

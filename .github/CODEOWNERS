@@ -1,0 +1,28 @@
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in the repo.
+*       @yourusername @yourteam
+
+# Order is important. The last matching pattern has the most precedence.
+# So if a pull request only touches Java files, only these owners will be requested to review.
+*.java  @yourusername @yourteam/java
+
+# You can also use email addresses if you prefer.
+docs/  docs@example.com
+
+# Teams can be specified as code owners as well. Teams should be identified in the format @org/team-name.
+# For example:
+# @octocat/engineering @octocat/design
+
+# You can also specify a single code owner for a specific file or directory.
+# For example, if you have a file that only John should be responsible for:
+# /path/to/file.java @johndoe
+
+# You can also use glob patterns to match multiple files or directories.
+# For example, to match all files in the 'config' directory:
+# /config/ @yourusername @yourteam/infrastructure
+
+# You can also use negative patterns to exclude certain files or directories.
+# For example, to exclude all files in the 'test' directory:
+# /test/

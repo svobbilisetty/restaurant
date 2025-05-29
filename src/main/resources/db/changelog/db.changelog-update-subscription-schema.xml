@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="update-restaurant-subscription-schema" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_subscription" schemaName="restaurants"/>
+        </preConditions>
+        
+        <!-- Add active column if it doesn't exist -->
+        <addColumn schemaName="restaurants" tableName="restaurant_subscription">
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <!-- Change start_date and end_date to TIMESTAMP -->
+        <modifyDataType 
+            schemaName="restaurants" 
+            tableName="restaurant_subscription" 
+            columnName="start_date" 
+            newDataType="TIMESTAMP"/>
+            
+        <modifyDataType 
+            schemaName="restaurants" 
+            tableName="restaurant_subscription" 
+            columnName="end_date" 
+            newDataType="TIMESTAMP"/>
+            
+        <!-- Add any other missing columns here -->
+        
+        <comment>Update restaurant_subscription table to match entity model</comment>
+    </changeSet>
+    
+    <!-- Add any additional changes for other tables if needed -->
+    
+</databaseChangeLog>

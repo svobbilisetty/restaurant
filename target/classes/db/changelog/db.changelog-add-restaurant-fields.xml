@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="add-restaurant-fields" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant" schemaName="restaurants"/>
+        </preConditions>
+        
+        <addColumn schemaName="restaurants" tableName="restaurant">
+            <column name="description" type="TEXT"/>
+            <column name="cuisine_type" type="VARCHAR(255)"/>
+            <column name="address" type="TEXT"/>
+            <column name="city" type="VARCHAR(100)"/>
+            <column name="state" type="VARCHAR(100)"/>
+            <column name="country" type="VARCHAR(100)"/>
+            <column name="postal_code" type="VARCHAR(20)"/>
+            <column name="phone_number" type="VARCHAR(20)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="website" type="VARCHAR(255)"/>
+            <column name="image_url" type="VARCHAR(1000)"/>
+        </addColumn>
+        
+        <comment>Add new fields to restaurant table</comment>
+    </changeSet>
+    
+</databaseChangeLog>

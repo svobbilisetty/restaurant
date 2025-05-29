@@ -1,0 +1,258 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="update-restaurant-verification-schema-1" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+        </preConditions>
+        
+        <!-- Make fssai_license_image_url nullable -->
+        <sql>
+            -- First, drop the NOT NULL constraint if it exists
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN fssai_license_image_url DROP NOT NULL;
+            
+            -- Then set the default value to NULL
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN fssai_license_image_url SET DEFAULT NULL;
+            
+            -- Update any existing NULL values to an empty string if needed
+            UPDATE restaurants.restaurant_verification 
+            SET fssai_license_image_url = '' 
+            WHERE fssai_license_image_url IS NULL;
+        </sql>
+            
+        <!-- Make location_image_url nullable -->
+        <sql>
+            -- First, drop the NOT NULL constraint if it exists
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN location_image_url DROP NOT NULL;
+            
+            -- Then set the default value to NULL
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN location_image_url SET DEFAULT NULL;
+            
+            -- Update any existing NULL values to an empty string if needed
+            UPDATE restaurants.restaurant_verification 
+            SET location_image_url = '' 
+            WHERE location_image_url IS NULL;
+            
+            -- Make gst_image_url nullable
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN gst_image_url DROP NOT NULL;
+            
+            ALTER TABLE restaurants.restaurant_verification 
+            ALTER COLUMN gst_image_url SET DEFAULT NULL;
+            
+            UPDATE restaurants.restaurant_verification 
+            SET gst_image_url = '' 
+            WHERE gst_image_url IS NULL;
+        </sql>
+            
+        <comment>Made image URL fields nullable in restaurant_verification table</comment>
+    </changeSet>
+    
+    <!-- Add new columns with preconditions to check if they don't exist -->
+    <changeSet id="update-restaurant-verification-schema-2" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="fssai_license_number" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="fssai_license_number" type="VARCHAR(100)"/>
+        </addColumn>
+        <comment>Added fssai_license_number column to restaurant_verification</comment>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-3" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="gst_number" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="gst_number" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-4" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="gst_certificate_url" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="gst_certificate_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-5" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="pan_number" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="pan_number" type="VARCHAR(20)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-6" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="pan_card_url" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="pan_card_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-7" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="owner_pan_card_url" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="owner_pan_card_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-8" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="owner_aadhaar_card_url" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="owner_aadhaar_card_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-9" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="bank_account_number" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="bank_account_number" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-10" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="bank_name" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="bank_name" type="VARCHAR(100)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-11" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="bank_ifsc_code" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="bank_ifsc_code" type="VARCHAR(20)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-12" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="cancelled_cheque_url" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="cancelled_cheque_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-13" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <not>
+                <columnExists tableName="restaurant_verification" columnName="verification_notes" schemaName="restaurants"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="restaurants" tableName="restaurant_verification">
+            <column name="verification_notes" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="update-restaurant-verification-schema-14" author="dineflow">
+        <preConditions>
+            <tableExists tableName="restaurant_verification" schemaName="restaurants"/>
+            <columnExists tableName="restaurant_verification" columnName="verification_status" schemaName="restaurants"/>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM information_schema.columns 
+                WHERE table_schema = 'restaurants' 
+                AND table_name = 'restaurant_verification' 
+                AND column_name = 'verification_status' 
+                AND data_type = 'character varying';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            -- Backup the current status values
+            ALTER TABLE restaurants.restaurant_verification 
+            ADD COLUMN IF NOT EXISTS verification_status_temp VARCHAR(20);
+            
+            -- Copy and convert the integer status to string
+            UPDATE restaurants.restaurant_verification 
+            SET verification_status_temp = 
+                CASE verification_status::integer
+                    WHEN 0 THEN 'PENDING'
+                    WHEN 1 THEN 'IN_PROGRESS'
+                    WHEN 2 THEN 'APPROVED'
+                    WHEN 3 THEN 'REJECTED'
+                    ELSE 'PENDING'
+                END;
+                
+            -- Drop the old column
+            ALTER TABLE restaurants.restaurant_verification 
+            DROP COLUMN verification_status;
+            
+            -- Rename the temp column
+            ALTER TABLE restaurants.restaurant_verification 
+            RENAME COLUMN verification_status_temp TO verification_status;
+        </sql>
+        <rollback>
+            <sql>
+                -- This is a simplified rollback - in a real scenario, you might need to handle data conversion
+                ALTER TABLE restaurants.restaurant_verification 
+                ALTER COLUMN verification_status TYPE INTEGER 
+                USING (CASE 
+                    WHEN verification_status = 'PENDING' THEN 0
+                    WHEN verification_status = 'IN_PROGRESS' THEN 1
+                    WHEN verification_status = 'APPROVED' THEN 2
+                    WHEN verification_status = 'REJECTED' THEN 3
+                    ELSE 0
+                END);
+            </sql>
+        </rollback>
+        <comment>Converted verification_status from integer to string enum</comment>
+    </changeSet>
+    
+</databaseChangeLog>

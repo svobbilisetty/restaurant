@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <!-- This changelog is a placeholder to ensure the initial schema is updated with the correct XSD version -->
+    <changeSet id="update-initial-schema-xsd" author="dineflow">
+        <comment>Update initial schema XSD version to 4.27</comment>
+        <sql>
+            -- This is a no-op change to ensure the changelog is processed with the correct XSD version
+            SELECT 1;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
